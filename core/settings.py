@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     # internal apps
 	# 'apis',
 	'users',
+	'auth',
 ]
 
 MIDDLEWARE = [
