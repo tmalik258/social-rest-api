@@ -19,6 +19,9 @@ class APIUsersTest(TestCase):
 			password='outlook25'
 		)
 	
+	def setUp(self) -> None:
+		self.client = APIClient()
+	
 	def test_retrieve_users_list(self):
 		"""
 		Retrieve List of `User` objects
@@ -53,3 +56,18 @@ class APIUsersTest(TestCase):
 		})
 
 		self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+	def test_patch_user_object_authorized(self):
+		"""
+		Patch/Update `User` object with authorization
+		"""
+		self.client.force_authenticate(user=self.user)
+		response = self.client.patch(f'/api/users/{self.user.public_id}/', {
+			"first_name": "Talha"
+		})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+		# Verify the update
+		self.user.refresh_from_db()
+		self.assertEqual(self.user.first_name, 'Talha')
