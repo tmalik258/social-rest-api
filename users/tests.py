@@ -29,7 +29,7 @@ class APIUsersTest(TestCase):
 		response = self.client.get('/api/users/')
 
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
-		data = response.data
+		data = response.json()
 		self.assertEqual(data[0]["username"], 'talha')
 
 		User = get_user_model()
@@ -43,7 +43,7 @@ class APIUsersTest(TestCase):
 
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-		data = response.data
+		data = response.json()
 		self.assertEqual(data['username'], 'talha')
 		self.assertEqual(data['email'], 'talha@example.com')
 
@@ -67,6 +67,9 @@ class APIUsersTest(TestCase):
 		})
 
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+		data = response.json()
+		self.assertEqual(data['first_name'], 'Talha')
 
 		# Verify the update
 		self.user.refresh_from_db()
