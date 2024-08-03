@@ -1,4 +1,5 @@
 from rest_framework import permissions, status
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from abstract.viewsets import AbstractViewSet
@@ -13,6 +14,28 @@ class PostViewSet(AbstractViewSet):
 	http_method_names = ['post', 'get', 'put', 'delete']
 	queryset = Post.objects.all()
 
+	@action(methods=['post'], detail=True)
+	def like(self, request, *args, **kwargs):
+		instance = self.get_object()
+		user = request.user
+
+		user.like(instance)
+
+		serializer = self.serializer_class(instance, context={"request": request})
+
+		return Response(serializer.data, status=status.HTTP_200_OK)
+	
+	@action(methods=['post'], detail=True)
+	def remove_like(self, request, *args, **kwargs):
+		instance = self.get_object()
+		user = request.user
+
+		user.unlike(instance)
+
+		serializer = self.serializer_class(instance)
+
+		return Response(serializer.data, status=status.HTTP_200_OK)
+	
 	def get_object(self):
 		obj = Post.objects.get_object_by_public_id(self.kwargs['pk'])
 

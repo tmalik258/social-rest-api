@@ -82,3 +82,41 @@ class APIPostTest(TestCase):
 		data = response.json()
 
 		self.assertTrue(data["edited"])
+	
+	def test_delete_post_obj(self):
+		self.get_access_token()
+
+		response = self.client.delete(f"/api/posts/{self.post.public_id}/")
+
+		self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+	
+	def test_like_post(self):
+		self.get_access_token()
+
+		response = self.client.post(f'/api/posts/{self.post.public_id}/like/')
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		
+		data = response.json()
+
+		self.assertEqual(data["likes_count"], 1)
+		self.assertEqual(data["liked"], True)
+	
+	def test_unlike_post(self):
+		self.get_access_token()
+
+		# like the post first and test if it is liked
+		response = self.client.post(f'/api/posts/{self.post.public_id}/like/')
+		
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		data = response.json()
+		self.assertEqual(data["likes_count"], 1)
+		
+		# remove the like from the post and test if it is unliked
+		response = self.client.post(f'/api/posts/{self.post.public_id}/remove_like/')
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		
+		data = response.json()
+
+		self.assertEqual(data["likes_count"], 0)
