@@ -3,6 +3,7 @@ from rest_framework import routers
 # from auth.viewsets.refresh import RefreshViewSet
 from auth.viewsets import (LoginViewset, RegisterViewSet, RefreshViewSet)
 
+from posts.viewsets import PostViewSet
 from users.viewsets import UserViewSet
 
 router = routers.SimpleRouter()
@@ -12,7 +13,7 @@ router = routers.SimpleRouter()
 # ############################### USER ################################ #
 # ##################################################################### #
 
-router.register(r'user', UserViewSet, basename='user')
+router.register(r'users', UserViewSet, basename='user')
 
 
 # ##################################################################### #
@@ -24,6 +25,11 @@ router.register(r'auth/login', LoginViewset, basename='auth-login')
 router.register(r'auth/refresh', RefreshViewSet, basename='auth-refresh')
 
 
+# ##################################################################### #
+# ############################### POST ################################ #
+# ##################################################################### #
+
+router.register(r'posts', PostViewSet, basename='post')
 
 
 urlpatterns = [

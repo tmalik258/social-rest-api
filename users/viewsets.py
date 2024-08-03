@@ -1,12 +1,13 @@
 from django.contrib.auth import get_user_model
 
-from rest_framework import (viewsets, permissions)
+from rest_framework import permissions
 
+from abstract.viewsets import AbstractViewSet
 from users.serializers import UserSerializer
 
 # Create your views here.
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(AbstractViewSet):
 	http_method_names = ('patch', 'get')
 	permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 	serializer_class = UserSerializer
