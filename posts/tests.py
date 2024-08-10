@@ -11,7 +11,7 @@ from posts.models import Post
 
 class APIPostTest(TestCase):
 	"""
-	Create `Post`
+	Create, Retrieve, Update, Delete, Like and Unlike `Post`
 	"""
 	@classmethod
 	def setUpTestData(cls) -> None:
@@ -31,6 +31,9 @@ class APIPostTest(TestCase):
 		self.access_token = None
 
 	def get_access_token(self):
+		"""
+		Get user_id, access_token, if not already. Authorized the client so requests can be made.
+		"""
 		if not self.access_token:
 			response = self.client.post('/api/auth/login/', {
 				"email": "micky@example.com",
@@ -49,17 +52,28 @@ class APIPostTest(TestCase):
 			self.access_token = data["access"]
 		self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
 
-	def test_get_posts_list(self):
+	def test_retrieve_posts_list(self):
+		"""
+		Retrieve lists of `POST`
+		"""
 		response = self.client.get('/api/posts/')
 
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-	def test_get_post_obj(self):
+		self.assertTrue(Post.objects.filter(public_id=self.post.public_id).exists())
+
+	def test_retrieve_post_object(self):
+		"""
+		Retrieve `Post` object
+		"""
 		response = self.client.get(f'/api/posts/{self.post.public_id}/')
 
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-	def test_create_post_obj(self):
+	def test_create_post_object(self):
+		"""
+		Create `Post` object
+		"""
 		self.get_access_token()
 		
 		response = self.client.post('/api/posts/', {
@@ -69,7 +83,10 @@ class APIPostTest(TestCase):
 
 		self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-	def test_update_post_obj(self):
+	def test_patch_post_object(self):
+		"""
+		Patch/Update `Post` object
+		"""
 		self.get_access_token()
 
 		response = self.client.put(f'/api/posts/{self.post.public_id}/', {
@@ -83,7 +100,10 @@ class APIPostTest(TestCase):
 
 		self.assertTrue(data["edited"])
 	
-	def test_delete_post_obj(self):
+	def test_delete_post_object(self):
+		"""
+		Delete `Post` object
+		"""
 		self.get_access_token()
 
 		response = self.client.delete(f"/api/posts/{self.post.public_id}/")
@@ -91,6 +111,9 @@ class APIPostTest(TestCase):
 		self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 	
 	def test_like_post(self):
+		"""
+		Like `Post` object
+		"""
 		self.get_access_token()
 
 		response = self.client.post(f'/api/posts/{self.post.public_id}/like/')
@@ -103,6 +126,9 @@ class APIPostTest(TestCase):
 		self.assertEqual(data["liked"], True)
 	
 	def test_unlike_post(self):
+		"""
+		Unlike `Post` object
+		"""
 		self.get_access_token()
 
 		# like the post first and test if it is liked

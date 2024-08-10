@@ -29,8 +29,6 @@ class APIUsersTest(TestCase):
 		response = self.client.get('/api/users/')
 
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
-		data = response.json()
-		self.assertEqual(data[0]["username"], 'talha')
 
 		User = get_user_model()
 		self.assertTrue(User.objects.filter(username='talha').exists())

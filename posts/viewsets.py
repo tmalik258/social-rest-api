@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 from abstract.viewsets import AbstractViewSet
 from posts.models import Post
-from posts.permissions import UserPermission
+from auth.permissions import UserPermission
 from posts.serializers import PostSerializer
 
 
