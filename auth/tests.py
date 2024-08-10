@@ -1,39 +1,58 @@
-from django.test import TestCase
-from django.contrib.auth import get_user_model
+import pytest
 
 from rest_framework import status
-from rest_framework.test import APIClient
 
-# Create your tests here.
-class APIAuthTest(TestCase):
-	@classmethod
-	def setUpTestData(cls) -> None:
-		cls.client = APIClient()
-		cls.user = get_user_model().objects.create_user(username="test1", email="test1@example.com", first_name="test", last_name="user1", password="micknmouse1")
+from fixtures.user import user
+
+
+class TestAuthenticationViewSet:
+	endpoint = '/api/auth/'
+
+	def test_login(self, client, user):
+		data = {
+			"username": user.username,
+			"password": "test_password"
+		}
+
+		response = client.post(f"{self.endpoint}login/", data)
+
+		assert response.status_code == status.HTTP_200_OK
+		assert response.data['access']
+		assert response.data['user']['id'] == user.public_id.hex
+		assert response.data['user']['username'] == user.username
+		assert response.data['user']['email'] == user.email
 	
-	def test_register_user_api(self):
-		response = self.client.post("/api/auth/register/", {
-			"username": "test",
-			"email": "test@example.com",
-			"first_name": "test",
-			"last_name": "user",
-			"password": "micknmouse1"
-		})
+	@pytest.mark.django_db
+	def test_register(self, client):
+		data = {
+			"username": "tmalik",
+			"email": "tmalik@example.com",
+			"first_name": "Talha",
+			"last_name": "Malik",
+			"password": "test_password"
+		}
 
-		data = response.json()
-		self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-		self.assertEqual(data["user"]["first_name"], get_user_model().objects.get(username=data["user"]["username"]).first_name)
-		self.assertIn("token", data)
-		self.assertIn("refresh", data)
+		response = client.post(f"{self.endpoint}register/", data)
+
+		assert response.status_code == status.HTTP_201_CREATED
+		assert response.data['user']['username'] == data['username']
+		assert response.data['user']['email'] == data['email']
 	
-	def test_login_user_api(self):
-		response = self.client.post("/api/auth/login/", {
-			"email": "test1@example.com",
-			"password": "micknmouse1"
-		})
+	def test_refresh(self, client, user):
+		data = {
+			"username": user.username,
+			"password": "test_password"
+		}
 
-		data = response.json()
-		self.assertEqual(response.status_code, status.HTTP_200_OK)
-		self.assertEqual(data["user"]["first_name"], get_user_model().objects.get(username=data["user"]["username"]).first_name)
-		self.assertIn("access", data)
-		self.assertIn("refresh", data)
+		response = client.post(f'{self.endpoint}login/', data)
+
+		assert response.status_code == status.HTTP_200_OK
+
+		data_refresh = {
+			"refresh": response.data["refresh"]
+		}
+
+		response = client.post(f'{self.endpoint}refresh/', data_refresh)
+
+		assert response.status_code == status.HTTP_200_OK
+		assert response.data["access"]

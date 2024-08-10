@@ -11,6 +11,7 @@ pluggy==1.5.0
 psycopg2-binary==2.9.9
 PyJWT==2.8.0
 pytest==8.3.2
+pytest-django==4.8.0
 pytz==2023.3.post1
 setuptools==69.0.2
 sqlparse==0.4.4
