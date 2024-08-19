@@ -1,9 +1,5 @@
-import uuid
-
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import Http404
 
 from abstract.models import AbstractManager, AbstractModel
 
@@ -32,7 +28,7 @@ class UserManager(BaseUserManager, AbstractManager):
 	
 	def create_superuser(self, username, email, password=None, **kwargs):
 		"""
- 		Create and return a `User` with superuser (admin) permissions.
+		Create and return a `User` with superuser (admin) permissions.
 		"""
 		if password is None:
 			raise TypeError('SuperUser must have a password.')
