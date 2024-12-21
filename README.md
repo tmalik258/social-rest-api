@@ -83,13 +83,16 @@ Here are some of the key endpoints in the API:
 
 ### Comments
 
+- `GET /api/posts/<id>/comments/` - List all comments of a post
 - `POST /api/posts/<id>/comments/` - Add a comment to a post
+- `GET /api/posts/<id>/comments/<id>` - Retrieve a single comment of a post
 - `PUT /api/posts/<id>/comments/<id>/` - Update a comment
 - `DELETE /api/posts/<id>/comments/<id>/` - Delete a comment
 
 ### Likes
 
-- `POST /api/posts/<id>/like/` - Like/unlike a post
+- `POST /api/posts/<id>/toggle_like/` - Like a post
+- `POST /api/posts/<id>/toggle_like/` - Unlike a post
 
 ### User Profiles
 
@@ -99,19 +102,13 @@ Here are some of the key endpoints in the API:
 
 You can customize the project by:
 
-1. Modifying the post, comment, and like models as needed.
+1. Modifying the post, comment, and user models as needed.
 2. Adding new features such as follower/following, hashtags, or media uploads.
 3. Integrating third-party packages for additional functionality.
 
 ## Testing
 
 This project includes tests for both core Django functionality and Pytest for advanced testing scenarios.
-
-### Running Django tests:
-
-```bash
-python manage.py test
-```
 
 ### Running Pytest:
 

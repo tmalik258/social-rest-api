@@ -5,5 +5,5 @@ from fixtures.user import user
 from fixtures.post import post
 
 @pytest.fixture
-def comment(db, user, post):
+def comment(db, user, post) -> Comment:
 	return Comment.objects.create(author=user, post=post, body='Test Comment Body')

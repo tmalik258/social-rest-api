@@ -88,7 +88,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'coredb',
+        'NAME': 'connectifydb',
 		'USER': 'core',
 		'PASSWORD': 'A<,&)Ufv3tRH?+G_.r!5~d',
 		'HOST': 'localhost',
